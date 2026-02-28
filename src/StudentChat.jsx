@@ -34,7 +34,8 @@ export default function StudentChat() {
       setMessages(initialMessages);
       setProgress(0);
     }
-    setSummary(null);
+    const savedSummary = localStorage.getItem(`summary_${course.topic}`);
+setSummary(savedSummary || null);
     setConfig(course);
   };
 
@@ -88,10 +89,14 @@ CRITICAL RULES:
         }),
       });
       const data = await response.json();
-      setSummary(data.content[0].text);
+      const summaryText = data.content[0].text;
+setSummary(summaryText);
+localStorage.setItem(`summary_${config.topic}`, summaryText);
     } catch (err) {
       setSummary("Could not generate summary.");
     }
+    setProgress(100);
+saveToStorage(messages, 100, config.topic);
     setSummaryLoading(false);
   };
 
